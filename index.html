@@ -1,754 +1,525 @@
-<!DOCTYPE html>
-<html lang="ko">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ESTHER ARCHIVE - Portfolio</title>
-    <style>
-        /* * =========================================
-         * 0. Design Tokens & Reset
-         * =========================================
-         */
-        :root {
-            /* Colors */
-            --primary: #4285f4; /* Neutral Blue */
-            --secondary: #ea4335; /* Neutral Red */
-            --accent-1: #fbbc04; /* Neutral Yellow */
-            --accent-2: #34a853; /* Neutral Green */
-            --dark: #202124;
-            --gray: #5f6368;
-            --light-gray: #f8f9fa;
-            --white: #ffffff;
-            --bg-color: #fafafa;
-            
-            /* Spacing & Layout */
-            --max-width: 1200px;
-            --header-height: 72px;
-            --radius-lg: 24px;
-            
-            /* Shadows */
-            --shadow-card: 0 4px 20px rgba(0,0,0,0.04);
-            --shadow-hover: 0 12px 32px rgba(0,0,0,0.08);
-        }
+import React, { useState, useEffect } from 'react';
+import { 
+    Menu, X, ArrowRight, CheckCircle, 
+    FileText, Layers, Activity, Shield, 
+    Target, Zap, LayoutTemplate, Briefcase 
+} from 'lucide-react';
 
-        html { scroll-behavior: smooth; }
+// --- Components ---
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; }
-        
-        body {
-            background-color: var(--bg-color);
-            background-image: radial-gradient(#dfe1e5 1px, transparent 1px);
-            background-size: 32px 32px;
-            color: var(--dark);
-            overflow-x: hidden;
-            line-height: 1.7;
-            letter-spacing: -0.01em;
-        }
+const Navbar = () => {
+    const [isOpen, setIsOpen] = useState(false);
+    const [scrolled, setScrolled] = useState(false);
 
-        a { text-decoration: none; color: inherit; transition: color 0.2s; }
-        button { border: none; background: none; cursor: pointer; font-family: inherit; }
-        ul { list-style: none; }
-        
-        .container { max-width: var(--max-width); margin: 0 auto; padding: 0 24px; }
-        .hidden { display: none !important; }
-        .flex { display: flex; }
-        .items-center { align-items: center; }
-        .justify-between { justify-content: space-between; }
-        
-        /* Buttons */
-        .btn {
-            padding: 12px 28px; border-radius: 50px; font-weight: 600;
-            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-            font-size: 0.95rem; display: inline-flex; align-items: center; justify-content: center;
-        }
-        .btn-primary { background-color: var(--primary); color: var(--white); box-shadow: 0 4px 12px rgba(66, 133, 244, 0.2); }
-        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(66, 133, 244, 0.3); }
-        
-        .btn-secondary { background-color: var(--white); border: 1px solid #dadce0; color: var(--gray); }
-        .btn-secondary:hover { background-color: var(--white); border-color: var(--dark); color: var(--dark); transform: translateY(-2px); }
+    useEffect(() => {
+        const handleScroll = () => {
+            setScrolled(window.scrollY > 50);
+        };
+        window.addEventListener('scroll', handleScroll);
+        return () => window.removeEventListener('scroll', handleScroll);
+    }, []);
 
-        .btn-circle {
-            width: 56px; height: 56px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
-            background: var(--white); box-shadow: var(--shadow-card); transition: transform 0.2s;
-            font-size: 1.2rem; border: 1px solid #eee;
-        }
-        .btn-circle:hover { transform: scale(1.1); border-color: var(--primary); color: var(--primary); }
+    const navLinks = [
+        { name: 'HOME', to: '#home' },
+        { name: 'COMPANY', to: '#company' },
+        { name: 'CAPABILITIES', to: '#capabilities' },
+        { name: 'PROJECTS', to: '#projects' },
+        { name: 'INSIGHTS', to: '#insights' },
+        { name: 'CONTACT', to: '#contact' },
+    ];
 
-        /* Header */
-        header {
-            position: sticky; top: 0; z-index: 1000; height: var(--header-height);
-            background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
-            border-bottom: 1px solid rgba(0,0,0,0.06); display: flex; align-items: center;
-        }
-        header .logo { font-size: 1.35rem; font-weight: 800; letter-spacing: -0.03em; color: var(--dark); display: flex; align-items: center; gap: 8px; }
-        header .logo::before { content: ''; display: block; width: 12px; height: 12px; background: var(--primary); border-radius: 50%; }
-        header nav ul { display: flex; gap: 40px; }
-        header nav a { font-size: 0.95rem; font-weight: 600; color: var(--gray); position: relative; padding: 8px 0; }
-        header nav a:hover { color: var(--dark); }
-        header nav a::after { content: ''; position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); width: 0; height: 2px; background: var(--primary); transition: width 0.3s; }
-        header nav a:hover::after { width: 100%; }
+    return (
+        <nav className={`fixed w-full z-50 transition-all duration-300 ${scrolled ? 'bg-white/95 backdrop-blur-sm shadow-md py-4' : 'bg-slate-900 py-6'}`}>
+            <div className="container mx-auto px-6 flex justify-between items-center">
+                <a href="#home" className={`text-2xl font-extrabold tracking-tighter ${scrolled ? 'text-slate-900' : 'text-white'}`}>
+                    STRUCTURE <span className="text-blue-500">FIXER</span>
+                </a>
+                
+                {/* Desktop Menu */}
+                <div className="hidden md:flex space-x-8">
+                    {navLinks.map((link) => (
+                        <a 
+                            key={link.name} 
+                            href={link.to} 
+                            className={`text-sm font-bold hover:text-blue-500 transition-colors ${scrolled ? 'text-slate-600' : 'text-slate-300'}`}
+                        >
+                            {link.name}
+                        </a>
+                    ))}
+                </div>
 
-        /* Mobile Menu */
-        .mobile-toggle { display: none; flex-direction: column; gap: 5px; cursor: pointer; padding: 8px; z-index: 1100; }
-        .mobile-toggle span { width: 24px; height: 2px; background-color: var(--dark); transition: 0.3s; }
-        .mobile-menu {
-            position: fixed; top: 0; right: -100%; width: 100%; height: 100vh;
-            background: rgba(255,255,255,0.98); backdrop-filter: blur(10px); z-index: 1050;
-            display: flex; flex-direction: column; justify-content: center; align-items: center;
-            transition: right 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-        .mobile-menu.active { right: 0; }
-        .mobile-menu ul { text-align: center; display: flex; flex-direction: column; gap: 32px; }
-        .mobile-menu a { font-size: 1.5rem; font-weight: 700; color: var(--dark); }
-        @media (max-width: 768px) { header nav { display: none; } .mobile-toggle { display: flex; } }
-
-        /* Hero */
-        .hero-section { position: relative; height: 90vh; min-height: 600px; width: 100%; overflow: hidden; display: flex; align-items: center; justify-content: center; }
-        .hero-bg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; filter: saturate(0.9); }
-        .hero-overlay {
-            position: relative; z-index: 10; text-align: center; max-width: 800px; padding: 48px;
-            background: rgba(255, 255, 255, 0.75); backdrop-filter: blur(20px); border-radius: 40px;
-            border: 1px solid rgba(255,255,255,0.8); box-shadow: 0 20px 60px rgba(0,0,0,0.08);
-            animation: fadeInUp 0.8s forwards 0.5s; opacity: 0; transform: translateY(20px);
-        }
-        @keyframes fadeInUp { to { transform: translateY(0); opacity: 1; } }
-        .hero-title { font-size: 3.5rem; line-height: 1.15; margin-bottom: 24px; color: var(--dark); letter-spacing: -0.04em; }
-        .hero-title span { color: var(--primary); }
-        .hero-subtitle { font-size: 1.25rem; color: var(--gray); margin-bottom: 40px; font-weight: 500; }
-        
-        .float-card {
-            position: absolute; background: rgba(255,255,255,0.9); backdrop-filter: blur(8px);
-            padding: 12px 24px; border-radius: 50px; box-shadow: var(--shadow-card);
-            font-weight: 700; font-size: 0.95rem; color: var(--dark); z-index: 5;
-            animation: float 6s ease-in-out infinite; border: 1px solid rgba(255,255,255,0.5);
-            display: flex; align-items: center; gap: 8px;
-        }
-        .float-card::before { content:''; display:block; width:8px; height:8px; border-radius:50%; }
-        .fc-1 { top: 20%; left: 10%; animation-delay: 0s; } .fc-1::before { background: var(--primary); }
-        .fc-2 { bottom: 20%; right: 12%; animation-delay: 2s; } .fc-2::before { background: var(--secondary); }
-        .fc-3 { top: 15%; right: 18%; animation-delay: 4s; } .fc-3::before { background: var(--accent-2); }
-        @keyframes float { 0% { transform: translateY(0px); } 50% { transform: translateY(-16px); } 100% { transform: translateY(0px); } }
-        @media (max-width: 768px) { .hero-section { height: 700px; } .hero-title { font-size: 2.25rem; } .float-card { display: none; } }
-
-        /* Banner */
-        .banner {
-            background: var(--dark); color: white; padding: 14px 24px; display: flex; justify-content: center;
-            align-items: center; gap: 16px; font-size: 0.9rem; position: relative; overflow: hidden;
-        }
-        .banner-close { position: absolute; right: 24px; color: rgba(255,255,255,0.6); z-index: 2; }
-        .banner-link { text-decoration: underline; color: #8ab4f8; font-weight: 600; margin-left: 8px; z-index: 2; }
-
-        /* Projects Carousel & Cards */
-        section { padding: 100px 0; }
-        .section-header { margin-bottom: 48px; display: flex; align-items: flex-end; justify-content: space-between; flex-wrap: wrap; gap: 20px; }
-        .section-title { font-size: 2.5rem; font-weight: 800; letter-spacing: -0.02em; line-height: 1.2; }
-        .section-desc { color: var(--gray); font-size: 1.1rem; margin-top: 8px; }
-
-        .carousel-section { position: relative; overflow: hidden; }
-        .carousel-container { position: relative; width: 100%; overflow: hidden; padding: 20px 0; margin: -20px 0; }
-        .carousel-track { display: flex; gap: 24px; width: max-content; cursor: grab; touch-action: pan-y; }
-        .carousel-track:active { cursor: grabbing; }
-
-        /* --- CARD STYLE START --- */
-        .carousel-card {
-            background-color: #ffffff;
-            /* Fallback Gradient if SVG fails */
-            background-image: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-            /* Variable injected by JS */
-            background-image: var(--card-bg, linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%));
-            background-size: cover;
-            background-position: center;
-            
-            border-radius: var(--radius-lg);
-            box-shadow: var(--shadow-card);
-            padding: 32px;
-            width: var(--card-width, 360px);
-            flex-shrink: 0;
-            position: relative; 
-            overflow: hidden;
-            display: flex; flex-direction: column;
-            transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1), box-shadow 0.3s;
-            user-select: none;
-            border: 1px solid rgba(0,0,0,0.05);
-        }
-
-        /* The White Overlay Film */
-        .carousel-card::before {
-            content: '';
-            position: absolute; inset: 0;
-            /* Less opacity (0.6) so background pattern shows through */
-            background: rgba(255, 255, 255, 0.6);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            z-index: 0;
-            transition: background 0.4s ease;
-        }
-
-        .carousel-card:hover { transform: translateY(-10px); box-shadow: 0 12px 32px rgba(0,0,0,0.12); }
-        .carousel-card:hover::before {
-            /* More transparent on hover to reveal pattern */
-            background: rgba(255, 255, 255, 0.45);
-        }
-
-        /* Content Elevation */
-        .carousel-card > * { position: relative; z-index: 1; }
-        
-        .c-meta { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
-        .c-date { font-size: 0.8rem; color: #444; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; }
-        .c-role { 
-            background: rgba(255,255,255,0.9); color: var(--primary); 
-            padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 800;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-        }
-        .c-title { 
-            font-size: 1.5rem; font-weight: 800; margin-bottom: 12px; 
-            letter-spacing: -0.02em; line-height: 1.2; color: #111;
-        }
-        .c-summary { font-size: 0.95rem; color: #333; margin-bottom: 24px; line-height: 1.6; flex-grow: 1; font-weight: 500; }
-        .c-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 24px; }
-        .c-tags span {
-            background: rgba(255, 255, 255, 0.8); border: 1px solid rgba(0,0,0,0.1);
-            padding: 4px 10px; border-radius: 8px; font-size: 0.75rem; color: #222; font-weight: 600;
-        }
-        .c-view-btn {
-            align-self: flex-start; padding: 10px 24px; border-radius: 30px;
-            font-size: 0.9rem; font-weight: 700; background: var(--dark); color: white;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1); transition: all 0.2s;
-        }
-        .c-view-btn:hover { background: #000; transform: scale(1.05); }
-        /* --- CARD STYLE END --- */
-
-        .carousel-controls { display: flex; justify-content: flex-end; align-items: center; gap: 16px; margin-bottom: 24px; }
-        .control-btn {
-            width: 48px; height: 48px; border-radius: 50%; background: white; border: 1px solid #eee;
-            box-shadow: var(--shadow-card); display: flex; align-items: center; justify-content: center;
-            font-size: 1.2rem; cursor: pointer; transition: all 0.2s; color: var(--dark);
-        }
-        .control-btn:hover { background: var(--dark); color: white; border-color: var(--dark); }
-        .carousel-dots { display: flex; gap: 8px; margin-right: auto; }
-        .dot { width: 8px; height: 8px; border-radius: 50%; background: #ddd; cursor: pointer; transition: 0.3s; }
-        .dot.active { background: var(--primary); width: 24px; border-radius: 12px; }
-
-        /* Impact Map */
-        .impact-section { margin-top: 60px; }
-        .impact-map {
-            background: white; border-radius: var(--radius-lg); padding: 40px; min-height: 300px;
-            box-shadow: var(--shadow-card); position: relative; overflow: hidden; display: flex; flex-direction: column;
-            border: 1px solid rgba(0,0,0,0.03);
-        }
-        .map-grid-bg {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background-image: linear-gradient(#f1f3f4 1px, transparent 1px), linear-gradient(90deg, #f1f3f4 1px, transparent 1px);
-            background-size: 40px 40px; opacity: 0.5; z-index: 0;
-        }
-        .map-content { position: relative; z-index: 1; flex-grow: 1; display: flex; flex-direction: column; }
-        .map-dots { flex-grow: 1; position: relative; min-height: 200px; }
-        .map-dot {
-            position: absolute; width: 16px; height: 16px; border-radius: 50%; transition: all 0.3s ease;
-            box-shadow: 0 0 0 4px rgba(255,255,255,0.5); cursor: pointer;
-        }
-        .map-dot:hover { transform: scale(1.4); z-index: 10; }
-        .map-dot:hover::after {
-            content: attr(data-tooltip); position: absolute; bottom: 24px; left: 50%; transform: translateX(-50%);
-            background: var(--dark); color: white; padding: 8px 12px; border-radius: 8px;
-            font-size: 0.85rem; font-weight: 600; white-space: nowrap; box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-        }
-        .map-legend { display: flex; gap: 16px; margin-top: 20px; border-top: 1px solid #eee; padding-top: 20px; }
-        .legend-item { display: flex; items-center; gap: 6px; font-size: 0.85rem; color: var(--gray); }
-        .legend-color { width: 10px; height: 10px; border-radius: 50%; }
-
-        /* Finder & Wheel & Stack */
-        .finder-box { background: var(--white); padding: 64px 40px; border-radius: 40px; text-align: center; box-shadow: var(--shadow-card); max-width: 900px; margin: 0 auto; border: 1px solid rgba(0,0,0,0.02); }
-        .finder-controls { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; margin-top: 40px; }
-        select {
-            padding: 16px 32px; border-radius: 50px; border: 2px solid #e0e0e0; font-size: 1rem;
-            background: white; cursor: pointer; min-width: 220px; font-weight: 500; appearance: none;
-            background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23202124%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
-            background-repeat: no-repeat; background-position: right 24px top 50%; background-size: 10px auto;
-        }
-        .finder-results { margin-top: 48px; display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 24px; text-align: left; }
-
-        .theme-container { display: grid; grid-template-columns: 1fr 2fr; gap: 60px; align-items: center; }
-        .wheel-wrapper { position: relative; width: 320px; height: 320px; margin: 0 auto; }
-        .color-wheel {
-            width: 100%; height: 100%; border-radius: 50%;
-            background: conic-gradient(var(--primary) 0deg 90deg, var(--secondary) 90deg 180deg, var(--accent-1) 180deg 270deg, var(--accent-2) 270deg 360deg);
-            position: relative; box-shadow: var(--shadow-float); transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
-            cursor: pointer; border: 8px solid white;
-        }
-        .color-wheel:hover { transform: rotate(45deg) scale(1.02); }
-        .wheel-center {
-            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-            width: 140px; height: 140px; background: white; border-radius: 50%;
-            display: flex; align-items: center; justify-content: center; text-align: center;
-            font-weight: 800; font-size: 1rem; color: var(--dark); pointer-events: none;
-            box-shadow: inset 0 0 20px rgba(0,0,0,0.05);
-        }
-        .theme-buttons { display: flex; gap: 16px; justify-content: center; margin-top: 32px; }
-        .theme-btn { 
-            width: 32px; height: 32px; border-radius: 50%; cursor: pointer; border: 3px solid white;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1); transition: transform 0.2s;
-        }
-        .theme-btn.active { transform: scale(1.2); border-color: var(--dark); }
-
-        .stack-section { display: flex; flex-direction: column; align-items: center; text-align: center; }
-        .stack-container { position: relative; width: 100%; max-width: 500px; height: 380px; margin: 40px auto; }
-        .stack-card {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: white; border-radius: 32px; padding: 48px; box-shadow: var(--shadow-card);
-            display: flex; flex-direction: column; justify-content: center; border: 1px solid #f0f0f0;
-            transition: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
-        }
-        .stack-card h3 { color: var(--primary); margin-bottom: 24px; font-size: 1rem; text-transform: uppercase; letter-spacing: 2px; font-weight: 800; }
-        .stack-card p { font-size: 1.6rem; font-weight: 700; color: var(--dark); line-height: 1.4; }
-
-        /* Footer & Modal */
-        footer { background: white; padding: 80px 0 40px; border-top: 1px solid #eee; margin-top: 100px; }
-        .footer-content { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px; }
-        .footer-brand h4 { font-size: 1.2rem; font-weight: 800; margin-bottom: 8px; }
-
-        dialog {
-            margin: auto; padding: 0; border: none; border-radius: 24px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.2); max-width: 1000px; width: 90%;
-            background: var(--bg-color); opacity: 0; transform: scale(0.95); transition: all 0.3s allow-discrete;
-        }
-        dialog[open] { opacity: 1; transform: scale(1); }
-        dialog::backdrop { background: rgba(0,0,0,0.4); backdrop-filter: blur(8px); }
-        .modal-header { padding: 24px 32px; background: white; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 10; }
-        .modal-body { padding: 40px; max-height: 80vh; overflow-y: auto; }
-        .close-modal { width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; background: #f1f3f4; transition: 0.2s; }
-        .modal-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 24px; }
-        .modal-grid .carousel-card { width: 100%; border-left-width: 4px; }
-
-        /* Contact */
-        .contact-form { max-width: 600px; margin: 0 auto; background: white; padding: 56px; border-radius: 40px; box-shadow: var(--shadow-card); }
-        .form-input { width: 100%; padding: 18px 24px; border: 2px solid #f1f3f4; border-radius: 16px; font-size: 1rem; transition: all 0.2s; background: #f8f9fa; }
-        .form-input:focus { border-color: var(--primary); background: white; outline: none; }
-        textarea.form-input { min-height: 140px; resize: vertical; }
-
-    </style>
-</head>
-<body>
-    <header id="main-header">
-        <div class="container flex justify-between items-center" style="width: 100%;">
-            <a href="#" class="logo">ESTHER ARCHIVE</a>
-            <nav>
-                <ul>
-                    <li><a href="#about">About</a></li>
-                    <li><a href="#latest">Latest</a></li>
-                    <li><a href="#explore">Explore</a></li>
-                    <li><a href="#contact">Contact</a></li>
-                </ul>
-            </nav>
-            <div class="flex items-center gap-2">
-                <button class="btn btn-primary" onclick="document.getElementById('contact').scrollIntoView()">Let's Talk</button>
-                <div class="mobile-toggle" onclick="toggleMobileMenu()"><span></span><span></span><span></span></div>
+                {/* Mobile Menu Button */}
+                <button 
+                    className="md:hidden focus:outline-none" 
+                    onClick={() => setIsOpen(!isOpen)}
+                >
+                    {isOpen ? 
+                        <X className={scrolled ? "text-slate-900" : "text-white"} /> : 
+                        <Menu className={scrolled ? "text-slate-900" : "text-white"} />
+                    }
+                </button>
             </div>
-        </div>
-    </header>
 
-    <div class="mobile-menu" id="mobile-menu">
-        <div style="position: absolute; top: 24px; right: 24px;" onclick="toggleMobileMenu()"><button class="close-modal">✕</button></div>
-        <ul>
-            <li><a href="#about" onclick="toggleMobileMenu()">About</a></li>
-            <li><a href="#latest" onclick="toggleMobileMenu()">Latest Works</a></li>
-            <li><a href="#explore" onclick="toggleMobileMenu()">Explore</a></li>
-            <li><a href="#contact" onclick="toggleMobileMenu()">Contact</a></li>
+            {/* Mobile Menu Dropdown */}
+            {isOpen && (
+                <div className="md:hidden absolute top-full left-0 w-full bg-white shadow-lg border-t border-slate-100">
+                    <div className="flex flex-col py-4">
+                        {navLinks.map((link) => (
+                            <a 
+                                key={link.name} 
+                                href={link.to}
+                                className="px-6 py-3 text-slate-800 hover:bg-slate-50 hover:text-blue-600 font-bold"
+                                onClick={() => setIsOpen(false)}
+                            >
+                                {link.name}
+                            </a>
+                        ))}
+                    </div>
+                </div>
+            )}
+        </nav>
+    );
+};
+
+const Hero = () => {
+    return (
+        <section id="home" className="relative pt-32 pb-20 md:pt-48 md:pb-32 bg-slate-900 text-white overflow-hidden">
+            {/* Background Pattern */}
+            <div className="absolute inset-0 opacity-10 pointer-events-none">
+                <div className="absolute right-0 top-0 w-1/2 h-full bg-blue-600 transform -skew-x-12 translate-x-1/4"></div>
+                <div className="absolute left-10 bottom-10 w-64 h-64 border border-slate-700 rounded-full"></div>
+                <div className="absolute right-20 top-20 w-32 h-32 border border-slate-700 rounded-full"></div>
+            </div>
+
+            <div className="container mx-auto px-6 relative z-10">
+                <div className="max-w-4xl">
+                    <h1 className="text-4xl md:text-6xl font-extrabold leading-tight mb-6">
+                        복잡한 공공·기술 문제를,<br/>
+                        <span className="text-blue-500">실행 가능한 구조</span>로 바꿉니다.
+                    </h1>
+                    <p className="text-lg md:text-xl text-slate-400 mb-10 max-w-2xl leading-relaxed font-medium">
+                        STRUCTURE FIXER는 공공·스마트시티·데이터·AI 프로젝트에서<br className="hidden md:block" />
+                        제안부터 수행, 운영까지 이어지는 구조를 설계합니다.
+                    </p>
+                    <div className="flex flex-col sm:flex-row gap-4">
+                        <a href="#projects" className="px-8 py-4 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-lg transition-all text-center flex items-center justify-center gap-2">
+                            View Projects <ArrowRight size={18} />
+                        </a>
+                        <a href="#company" className="px-8 py-4 border border-slate-600 hover:border-slate-400 text-slate-300 hover:text-white font-bold rounded-lg transition-all text-center">
+                            Company Profile
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    );
+};
+
+const ServiceCard = ({ icon: Icon, title, desc, items }) => (
+    <div className="bg-white p-8 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow group">
+        <div className="w-12 h-12 bg-blue-50 rounded-lg flex items-center justify-center mb-6 group-hover:bg-blue-600 transition-colors">
+            <Icon className="text-blue-600 group-hover:text-white transition-colors" size={24} />
+        </div>
+        <h3 className="text-xl font-extrabold text-slate-900 mb-2">{title}</h3>
+        <p className="text-slate-600 mb-6 text-sm leading-relaxed min-h-[40px]">{desc}</p>
+        <ul className="space-y-2">
+            {items.map((item, idx) => (
+                <li key={idx} className="flex items-start text-sm text-slate-500 font-medium">
+                    <span className="w-1.5 h-1.5 bg-blue-400 rounded-full mt-1.5 mr-2 flex-shrink-0"></span>
+                    {item}
+                </li>
+            ))}
         </ul>
     </div>
+);
 
-    <main>
-        <section class="hero-section" id="about">
-            <div class="hero-bg"><iframe src='https://my.spline.design/interactivecubes-2dAkHRBgLy93wciZ89kdNy8W/' frameborder='0' width='100%' height='100%'></iframe></div>
-            <div class="hero-overlay">
-                <h1 class="hero-title">I design systems that turn <span>data</span> into <span>decisions</span>.</h1>
-                <p class="hero-subtitle">Product Planning · Data Visualization · Public Sector Strategy</p>
-                <div class="flex" style="justify-content: center; gap: 16px; flex-wrap: wrap;">
-                    <button class="btn btn-primary" onclick="document.getElementById('latest').scrollIntoView()">View Projects</button>
-                    <button class="btn btn-secondary" onclick="document.getElementById('contact').scrollIntoView()">Contact Me</button>
+const WhatWeDo = () => {
+    const services = [
+        {
+            icon: FileText,
+            title: "1. Proposal Planning",
+            desc: "수주를 위한 문서가 아니라, 수행과 운영까지 이어지는 논리를 설계합니다.",
+            items: ["사업 구조 분석", "제안 논리 정렬", "KPI·성과체계 설계", "발표자료 및 스토리라인 구성"]
+        },
+        {
+            icon: LayoutTemplate,
+            title: "2. Service Planning",
+            desc: "기술 중심이 아닌, 사용자·운영자·발주처 관점에서 서비스를 구조화합니다.",
+            items: ["서비스 구조 정의", "데이터 활용 시나리오", "대시보드·UI 정보 구조", "AI 적용 시나리오 기획"]
+        },
+        {
+            icon: Target,
+            title: "3. Delivery & Execution",
+            desc: "계획으로 끝나지 않도록, 실제 현장에서 작동하는 구조를 만듭니다.",
+            items: ["WBS·일정 관리", "이해관계자 조율", "산출물 품질 관리", "현장 이슈 대응"]
+        },
+        {
+            icon: Shield,
+            title: "4. Governance & Management",
+            desc: "프로젝트 종료 이후까지 고려한 운영·관리 구조를 설계합니다.",
+            items: ["운영 프로세스 정리", "역할·권한 체계 정의", "인수인계 문서화", "확장·고도화 고려"]
+        }
+    ];
+
+    return (
+        <section className="py-20 bg-slate-50">
+            <div className="container mx-auto px-6">
+                <div className="text-center mb-16">
+                    <h2 className="text-3xl font-extrabold text-slate-900 mb-4">WHAT WE DO</h2>
+                    <p className="text-slate-600 font-medium">문제를 정의하고, 구조를 설계하며, 실행을 완료합니다.</p>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    {services.map((service, idx) => (
+                        <ServiceCard key={idx} {...service} />
+                    ))}
                 </div>
             </div>
-            <div class="float-card fc-1">Product Manager</div>
-            <div class="float-card fc-2">Data Driven</div>
-            <div class="float-card fc-3">Smart City</div>
         </section>
+    );
+};
 
-        <aside class="banner" id="notice-banner">
-            <span style="z-index: 2;">🚀 <strong>Update:</strong> Currently working on Dashboard IA & data product planning.</span>
-            <a href="#" class="banner-link">Read Case Study</a>
-            <button class="banner-close" onclick="this.parentElement.style.display='none'">✕</button>
-        </aside>
+const WhyUs = () => {
+    const reasons = [
+        { title: "문제 정의부터 시작합니다", desc: "“무엇을 만들 것인가”보다 “왜 필요한가”를 먼저 정리합니다." },
+        { title: "기술과 행정의 언어를 연결합니다", desc: "개발자, 공무원, 연구자 모두가 이해하는 구조를 만듭니다." },
+        { title: "제안–수행–운영의 맥락을 끊지 않습니다", desc: "문서용 기획이 아닌 실행 가능한 기획을 지향합니다." }
+    ];
 
-        <section id="latest" class="container">
-            <div class="section-header">
+    return (
+        <section className="py-20 bg-white border-y border-slate-100">
+            <div className="container mx-auto px-6">
+                <div className="flex flex-col lg:flex-row items-center gap-12">
+                    <div className="lg:w-1/3">
+                        <h2 className="text-3xl font-extrabold text-slate-900 mb-6">WHY<br/>STRUCTURE FIXER</h2>
+                        <p className="text-slate-600 leading-relaxed font-medium">
+                            우리는 단순한 기획자가 아닙니다.<br/>
+                            복잡하게 얽힌 문제의 실타래를 풀고,<br/>
+                            단단한 구조로 재조립하는 <strong>Fixer</strong>입니다.
+                        </p>
+                    </div>
+                    <div className="lg:w-2/3 grid gap-6">
+                        {reasons.map((reason, idx) => (
+                            <div key={idx} className="flex items-start p-6 bg-slate-50 rounded-lg border border-slate-100">
+                                <CheckCircle className="text-blue-600 mt-1 mr-4 flex-shrink-0" size={24} />
+                                <div>
+                                    <h3 className="text-lg font-bold text-slate-900 mb-2">{reason.title}</h3>
+                                    <p className="text-slate-600">{reason.desc}</p>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            </div>
+        </section>
+    );
+};
+
+const Company = () => {
+    return (
+        <section id="company" className="py-20 bg-slate-900 text-white">
+            <div className="container mx-auto px-6">
+                <div className="mb-16 border-b border-slate-700 pb-8">
+                    <h2 className="text-3xl font-extrabold mb-4">COMPANY</h2>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8 text-slate-300">
+                        <div>
+                            <p><strong className="text-white">Company Name:</strong> STRUCTURE FIXER</p>
+                            <p className="mt-2"><strong className="text-white">Business Area:</strong> Public Sector / Smart City / Data & AI Service Planning</p>
+                        </div>
+                        <div>
+                            <p><strong className="text-white">Core Expertise:</strong> Proposal Planning · Service Planning · Delivery · Governance</p>
+                            <p className="mt-2"><strong className="text-white">Location:</strong> Republic of Korea</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-16">
+                    {/* Vision */}
+                    <div className="bg-slate-800 p-8 rounded-xl border-l-4 border-blue-500">
+                        <h3 className="text-xl font-bold text-blue-400 mb-4">VISION</h3>
+                        <p className="text-2xl font-light leading-relaxed text-white">
+                            "공공 서비스가<br/>
+                            데이터와 구조로 작동하는 환경을 만든다."
+                        </p>
+                    </div>
+                    
+                    {/* Mission */}
+                    <div className="bg-slate-800 p-8 rounded-xl border-l-4 border-teal-500">
+                        <h3 className="text-xl font-bold text-teal-400 mb-4">MISSION</h3>
+                        <ul className="space-y-4 text-slate-200">
+                            <li className="flex items-center"><span className="w-2 h-2 bg-teal-500 rounded-full mr-3"></span>복잡한 공공·기술 과제를 구조적으로 해석한다.</li>
+                            <li className="flex items-center"><span className="w-2 h-2 bg-teal-500 rounded-full mr-3"></span>이해관계자가 같은 그림으로 실행할 수 있도록 정렬한다.</li>
+                            <li className="flex items-center"><span className="w-2 h-2 bg-teal-500 rounded-full mr-3"></span>문서가 아닌, 작동하는 결과를 남긴다.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                {/* Core Values */}
                 <div>
-                    <h2 class="section-title">Latest Works</h2>
-                    <p class="section-desc">최근 진행한 주요 프로젝트를 슬라이드로 확인하세요.</p>
-                </div>
-                <div class="carousel-controls">
-                    <div class="carousel-dots" id="carousel-dots"></div>
-                    <button class="control-btn" id="prev-btn" aria-label="Previous projects">←</button>
-                    <button class="control-btn" id="next-btn" aria-label="Next projects">→</button>
+                    <h3 className="text-xl font-bold mb-8 text-center">CORE VALUES</h3>
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+                        {[
+                            { en: "Clarity", kr: "모호한 요구사항을 구조와 기준으로 정리합니다." },
+                            { en: "Accountability", kr: "역할·범위·결정 책임을 명확히 합니다." },
+                            { en: "Translation", kr: "기술과 행정, 기획의 언어를 연결합니다." },
+                            { en: "Execution", kr: "계획이 실제 현장에서 실행되도록 끝까지 책임집니다." }
+                        ].map((val, idx) => (
+                            <div key={idx} className="text-center p-6 bg-slate-800/50 rounded-lg">
+                                <h4 className="text-lg font-bold text-white mb-2">{val.en}</h4>
+                                <p className="text-sm text-slate-400 break-keep font-medium">{val.kr}</p>
+                            </div>
+                        ))}
+                    </div>
                 </div>
             </div>
-            <div class="carousel-container" id="carousel-container" tabindex="0" role="region" aria-label="Projects Carousel">
-                <div class="carousel-track" id="carousel-track"></div>
+        </section>
+    );
+};
+
+const Capabilities = () => {
+        const caps = [
+        { title: "제안기획 (Proposal Planning)", items: ["공공사업 구조 분석", "제안 논리 및 스토리라인 설계", "KPI·성과지표 체계 수립", "제안서·발표자료 작성"] },
+        { title: "서비스기획 (Service Planning)", items: ["서비스 구조 및 기능 정의", "데이터 활용 모델 설계", "대시보드 정보 구조 설계", "AI·데이터 기반 서비스 시나리오"] },
+        { title: "수행 (Delivery)", items: ["WBS·일정·리스크 관리", "이해관계자 커뮤니케이션", "산출물 품질 관리", "현장 이슈 대응"] },
+        { title: "관리 (Governance)", items: ["운영 프로세스 설계", "역할·권한·관리 체계 정의", "인수인계 문서화", "확장·고도화 고려"] }
+    ];
+
+    return (
+        <section id="capabilities" className="py-20 bg-white">
+            <div className="container mx-auto px-6">
+                <div className="text-center mb-16">
+                    <h2 className="text-3xl font-extrabold text-slate-900">CAPABILITIES</h2>
+                    <p className="text-slate-500 mt-2 font-medium">STRUCTURE FIXER의 전문 역량 프레임워크</p>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    {caps.map((cap, idx) => (
+                        <div key={idx} className="border border-slate-200 rounded-lg p-6 hover:border-blue-500 transition-colors">
+                            <h3 className="text-lg font-bold text-slate-900 mb-4 border-b border-slate-100 pb-2">{cap.title}</h3>
+                            <div className="flex flex-wrap gap-2">
+                                {cap.items.map((item, i) => (
+                                    <span key={i} className="px-3 py-1 bg-slate-100 text-slate-600 text-sm rounded-full font-medium">
+                                        {item}
+                                    </span>
+                                ))}
+                            </div>
+                        </div>
+                    ))}
+                </div>
             </div>
-            <div class="impact-section">
-                <div class="impact-map">
-                    <div class="map-grid-bg"></div>
-                    <div class="map-content">
-                        <h3 style="margin-bottom:12px; font-weight:800; font-size: 1.5rem;">Impact Distribution</h3>
-                        <p style="font-size:0.95rem; color:var(--gray); margin-bottom:20px;">각 프로젝트가 미친 영향의 범위를 시각화했습니다.</p>
-                        <div class="map-dots" id="map-container"></div>
-                        <div class="map-legend">
-                            <div class="legend-item"><span class="legend-color" style="background:var(--primary)"></span>Data</div>
-                            <div class="legend-item"><span class="legend-color" style="background:var(--secondary)"></span>Ops</div>
-                            <div class="legend-item"><span class="legend-color" style="background:var(--accent-1)"></span>Prod</div>
-                            <div class="legend-item"><span class="legend-color" style="background:var(--accent-2)"></span>R&D</div>
+        </section>
+    );
+};
+
+const ProjectCard = ({ title, role, problem, approach, deliverables, index }) => (
+    <div className="bg-white rounded-xl overflow-hidden border border-slate-200 shadow-sm hover:shadow-lg transition-all duration-300 flex flex-col h-full">
+        <div className="bg-slate-50 px-6 py-4 border-b border-slate-100 flex justify-between items-center">
+            <h3 className="font-extrabold text-lg text-slate-900">{title}</h3>
+            <span className="text-xs font-bold text-blue-600 bg-blue-50 px-2 py-1 rounded border border-blue-100">CASE 0{index + 1}</span>
+        </div>
+        <div className="p-6 flex-grow flex flex-col gap-6">
+            <div>
+                <span className="text-xs font-bold text-slate-400 uppercase tracking-wider block mb-1">Role</span>
+                <p className="text-sm font-bold text-slate-700">{role}</p>
+            </div>
+            
+            <div className="bg-red-50 p-4 rounded-lg border border-red-100">
+                <span className="text-xs font-bold text-red-500 uppercase tracking-wider block mb-1">Problem</span>
+                <p className="text-sm text-slate-700">{problem}</p>
+            </div>
+
+            <div className="bg-blue-50 p-4 rounded-lg border border-blue-100 flex-grow">
+                <span className="text-xs font-bold text-blue-500 uppercase tracking-wider block mb-1">Approach</span>
+                <ul className="list-disc list-inside text-sm text-slate-700 space-y-1">
+                    {approach.map((item, i) => <li key={i}>{item}</li>)}
+                </ul>
+            </div>
+
+            <div>
+                <span className="text-xs font-bold text-slate-400 uppercase tracking-wider block mb-2">Deliverables</span>
+                <div className="flex flex-wrap gap-2">
+                    {deliverables.map((item, i) => (
+                        <span key={i} className="text-xs bg-slate-100 text-slate-600 px-2 py-1 rounded font-medium">{item}</span>
+                    ))}
+                </div>
+            </div>
+        </div>
+    </div>
+);
+
+const Projects = () => {
+    const projects = [
+        {
+            title: "성남시 스마트 빌리지",
+            role: "제안기획 · 서비스기획 · 수행",
+            problem: "다양한 스마트 서비스가 개별적으로 운영되어 통합적 관리와 활용이 어려운 상황",
+            approach: ["스마트 서비스 구조 재정의", "데이터 기반 통합 관리 시나리오 설계", "사용자·운영자 관점 서비스 기획"],
+            deliverables: ["서비스 구조도", "대시보드 기획안", "제안서 및 수행 산출물"]
+        },
+        {
+            title: "KOICA 베트남 스마트시티",
+            role: "제안기획 · 서비스기획 · 대외 커뮤니케이션",
+            problem: "해외 도시 환경에 맞는 스마트시티 모델 부재, 기술 중심 접근으로 현지 적용성 한계",
+            approach: ["현지 행정·환경 분석", "단계별 스마트시티 서비스 구조 설계", "KOICA 사업 구조에 맞춘 실행 시나리오 제안"],
+            deliverables: ["스마트시티 서비스 기획안", "제안서·발표자료", "사업 구조 정리 문서"]
+        },
+        {
+            title: "강원 후평 스마트그린산단",
+            role: "제안기획 · 수행 · 관리",
+            problem: "스마트그린산단 사업 범위가 넓고 참여 기관 간 역할·책임이 불명확",
+            approach: ["사업 구조 및 역할 재정의", "통합 관제·데이터 활용 시나리오 설계", "수행·운영 관점에서의 관리 체계 정리"],
+            deliverables: ["통합 관제 서비스 기획", "수행 계획서", "운영·관리 구조 문서"]
+        },
+        {
+            title: "NIPA 공공 AX 실증 사업",
+            role: "서비스기획 · 수행",
+            problem: "AI 기술은 있으나 실제 공공 업무 적용 시나리오 부족",
+            approach: ["공공 업무 프로세스 분석", "AI 적용 가능한 지점 도출", "실증 중심 서비스 시나리오 설계"],
+            deliverables: ["공공 AX 서비스 기획안", "실증 시나리오 문서", "성과 정리 자료"]
+        }
+    ];
+
+    return (
+        <section id="projects" className="py-20 bg-slate-50">
+            <div className="container mx-auto px-6">
+                    <div className="text-center mb-16">
+                    <h2 className="text-3xl font-extrabold text-slate-900">PROJECTS</h2>
+                    <p className="text-slate-500 mt-2 font-medium">복잡한 문제를 구조적으로 해결한 대표 사례입니다.</p>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    {projects.map((p, idx) => (
+                        <ProjectCard key={idx} {...p} index={idx} />
+                    ))}
+                </div>
+            </div>
+        </section>
+    );
+};
+
+const Insights = () => {
+    const titles = [
+        "공공 프로젝트에서 기획자가 반드시 해야 하는 일",
+        "제안서가 수행까지 이어지지 않는 이유",
+        "공공 AX에서 ‘AI’보다 중요한 것",
+        "대시보드는 왜 항상 실패하는가",
+        "이해관계자가 많은 프로젝트를 정리하는 법"
+    ];
+
+    return (
+        <section id="insights" className="py-20 bg-white">
+            <div className="container mx-auto px-6">
+                <div className="flex justify-between items-end mb-12">
+                    <div>
+                        <h2 className="text-3xl font-extrabold text-slate-900">INSIGHTS</h2>
+                        <p className="text-slate-500 mt-2 font-medium">현장에서 얻은 경험과 관점을 공유합니다.</p>
+                    </div>
+                    <a href="#" className="hidden md:inline-block text-blue-600 font-bold hover:underline">View All Posts &rarr;</a>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {titles.map((title, idx) => (
+                        <div key={idx} className="group cursor-pointer">
+                            <div className="aspect-video bg-slate-100 rounded-lg mb-4 overflow-hidden relative">
+                                <div className="absolute inset-0 bg-slate-200 group-hover:scale-105 transition-transform duration-500"></div>
+                                <div className="absolute inset-0 flex items-center justify-center text-slate-400">
+                                    <FileText size={40} opacity={0.5} />
+                                </div>
+                            </div>
+                            <div className="flex gap-2 mb-2">
+                                    <span className="text-xs font-bold text-blue-600 uppercase">Column</span>
+                                    <span className="text-xs text-slate-400 font-medium">2023.10.{10 + idx}</span>
+                            </div>
+                            <h3 className="text-lg font-bold text-slate-900 group-hover:text-blue-600 transition-colors leading-snug">
+                                {title}
+                            </h3>
+                        </div>
+                    ))}
+                </div>
+                <div className="mt-8 text-center md:hidden">
+                    <a href="#" className="text-blue-600 font-semibold hover:underline">View All Posts &rarr;</a>
+                </div>
+            </div>
+        </section>
+    );
+};
+
+const Contact = () => {
+    return (
+        <section id="contact" className="py-20 bg-slate-900 text-white">
+            <div className="container mx-auto px-6">
+                <div className="max-w-4xl mx-auto text-center">
+                    <h2 className="text-3xl font-extrabold mb-6">CONTACT</h2>
+                    <p className="text-xl text-slate-300 mb-12 font-medium">
+                        복잡한 공공·기술 과제, 구조를 잡으면 해결됩니다.<br/>
+                        당신의 프로젝트를 실행 가능한 상태로 만들어 드립니다.
+                    </p>
+                    
+                    <div className="bg-slate-800 p-8 rounded-xl max-w-lg mx-auto border border-slate-700">
+                        <h3 className="text-xl font-bold text-white mb-6">Get In Touch</h3>
+                        <div className="space-y-4 text-left">
+                            <div className="flex items-center space-x-4">
+                                <div className="w-10 h-10 bg-slate-700 rounded-full flex items-center justify-center">
+                                    <Briefcase size={20} className="text-blue-400" />
+                                </div>
+                                <div>
+                                    <p className="text-xs text-slate-400 uppercase font-bold">Inquiry</p>
+                                    <p className="text-slate-200">contact@structurefixer.com</p>
+                                </div>
+                            </div>
+                            <div className="flex items-center space-x-4">
+                                <div className="w-10 h-10 bg-slate-700 rounded-full flex items-center justify-center">
+                                    <LayoutTemplate size={20} className="text-blue-400" />
+                                </div>
+                                <div>
+                                    <p className="text-xs text-slate-400 uppercase font-bold">Portfolio Request</p>
+                                    <a href="#" className="text-blue-400 hover:text-blue-300 underline font-medium">Download PDF Profile</a>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </section>
+    );
+};
 
-        <section id="finder" style="background: #fff; border-top: 1px solid #f0f0f0; border-bottom: 1px solid #f0f0f0;">
-            <div class="container">
-                <div class="finder-box">
-                    <h2 class="section-title">What are you looking for?</h2>
-                    <p class="section-desc">관심 있는 분야와 맥락을 선택하여 맞춤형 포트폴리오를 탐색하세요.</p>
-                    <div class="finder-controls">
-                        <select id="filter-focus">
-                            <option value="">Select Focus Area...</option>
-                            <option value="Data Platform">Data Platform</option>
-                            <option value="Dashboard">Dashboard</option>
-                            <option value="UX Writing">UX Writing</option>
-                        </select>
-                        <select id="filter-context">
-                            <option value="">Select Context...</option>
-                            <option value="Public Sector">Public Sector</option>
-                            <option value="R&D">R&D</option>
-                            <option value="Internal Tool">Internal Tool</option>
-                        </select>
-                        <button class="btn btn-primary" onclick="handleFinder()">Show Results</button>
-                    </div>
-                    <div id="finder-results" class="finder-results"></div>
-                </div>
+const Footer = () => (
+    <footer className="bg-slate-950 text-slate-500 py-8 border-t border-slate-900">
+        <div className="container mx-auto px-6 flex flex-col md:flex-row justify-between items-center">
+            <div className="mb-4 md:mb-0">
+                <span className="font-bold text-slate-400">STRUCTURE FIXER</span>
+                <span className="mx-2">|</span>
+                <span className="text-sm">Republic of Korea</span>
             </div>
-        </section>
-
-        <section id="explore" class="container">
-            <div class="theme-container">
-                <div class="wheel-section" style="text-align: center;">
-                    <div class="wheel-wrapper">
-                        <div class="color-wheel" id="theme-wheel"></div>
-                        <div class="wheel-center">PICK<br>THEME</div>
-                    </div>
-                    <div class="theme-buttons">
-                        <div class="theme-btn" style="background:var(--primary)" onclick="filterTheme('blue')" title="Data"></div>
-                        <div class="theme-btn" style="background:var(--secondary)" onclick="filterTheme('red')" title="Ops"></div>
-                        <div class="theme-btn" style="background:var(--accent-1)" onclick="filterTheme('yellow')" title="Prod"></div>
-                        <div class="theme-btn" style="background:var(--accent-2)" onclick="filterTheme('green')" title="R&D"></div>
-                    </div>
-                    <div style="margin-top:32px;"><button class="btn btn-secondary" onclick="surpriseMe()">Surprise Me ✨</button></div>
-                </div>
-                <div class="theme-list">
-                    <h3 id="current-theme-title" style="margin-bottom:24px; font-size:1.4rem; font-weight: 800;">Select a theme</h3>
-                    <div id="theme-results" class="modal-grid">
-                        <div style="padding:60px; text-align:center; color:var(--gray); border:2px dashed #e0e0e0; border-radius:24px; background: #f8f9fa;">
-                            <div style="font-size: 2rem; margin-bottom: 16px;">🎨</div>
-                            왼쪽의 컬러 휠이나 버튼을 클릭하세요.
-                        </div>
-                    </div>
-                </div>
+            <div className="text-sm">
+                &copy; {new Date().getFullYear()} Structure Fixer. All rights reserved.
             </div>
-        </section>
-
-        <section id="notes" class="container stack-section">
-            <h2 class="section-title">About Me & Notes</h2>
-            <div class="stack-container" id="stack-container"></div>
-            <div class="stack-controls"><button class="btn btn-circle" onclick="nextCard()">→</button></div>
-        </section>
-
-        <section id="contact" class="container" style="padding-bottom: 120px;">
-            <div class="contact-form">
-                <h2 class="section-title" style="text-align: center; margin-bottom:16px;">Let's Connect</h2>
-                <form onsubmit="event.preventDefault(); alert('메시지가 전송되었습니다 (데모).');">
-                    <div class="form-group"><input type="text" class="form-input" placeholder="Your Name" required></div>
-                    <div class="form-group"><input type="email" class="form-input" placeholder="Email Address" required></div>
-                    <div class="form-group"><textarea class="form-input" placeholder="Tell me about your project..."></textarea></div>
-                    <button type="submit" class="btn btn-primary" style="width: 100%;">Send Message</button>
-                </form>
-            </div>
-        </section>
-    </main>
-
-    <footer>
-        <div class="container footer-content">
-            <div class="footer-brand"><h4>ESTHER ARCHIVE</h4><p style="font-size:0.9rem; color:var(--gray);">© 2024 Esther. All rights reserved.</p></div>
-            <div class="footer-links"><a href="#">Resume</a><a href="#">Notes</a><a href="#">Imprint</a></div>
         </div>
     </footer>
+);
 
-    <dialog id="project-modal">
-        <div class="modal-header">
-            <h3 style="font-size: 1.25rem; font-weight: 700;">All Projects Archive</h3>
-            <button class="close-modal" onclick="document.getElementById('project-modal').close()">✕</button>
+const App = () => {
+    return (
+        <div className="antialiased bg-slate-50 text-slate-800 font-sans">
+             <style>{`
+                @import url('https://cdn.jsdelivr.net/gh/moonspam/NanumSquare@2.0/nanumsquareround.css');
+                body {
+                    font-family: 'NanumSquareRound', sans-serif;
+                    scroll-behavior: smooth;
+                }
+                html {
+                    scroll-behavior: smooth;
+                }
+            `}</style>
+            <Navbar />
+            <Hero />
+            <WhatWeDo />
+            <WhyUs />
+            <Company />
+            <Capabilities />
+            <Projects />
+            <Insights />
+            <Contact />
+            <Footer />
         </div>
-        <div class="modal-body"><div class="modal-grid" id="modal-grid"></div></div>
-    </dialog>
+    );
+};
 
-    <script>
-        (function() {
-            const projects = [
-                { id: 1, title: "City Data Hub", date: "2023.10", role: "PM / Planning", tags: ["Data Platform", "Public Sector"], themeColor: "blue", summary: "도시 데이터를 실시간으로 수집하고 시각화하는 시민 참여형 플랫폼 기획.", impact: "참여율 120% 증가" },
-                { id: 2, title: "Eco-Friendly Routing", date: "2023.05", role: "UX Researcher", tags: ["Research", "Sustainability"], themeColor: "green", summary: "탄소 배출을 최소화하는 경로 탐색 알고리즘 UX/UI 리서치.", impact: "효율 15% 개선" },
-                { id: 3, title: "Admin Dashboard", date: "2022.11", role: "Product Design", tags: ["Dashboard", "Operations"], themeColor: "red", summary: "사내 운영 효율화를 위한 어드민 대시보드 시스템 개편.", impact: "시간 30분 단축" },
-                { id: 4, title: "AI Content Gen", date: "2024.01", role: "Product Owner", tags: ["R&D", "AI"], themeColor: "yellow", summary: "마케팅 문구를 생성하는 Generative AI 프로덕트 MVP.", impact: "유저 5천명 확보" },
-                { id: 5, title: "Fintech Writing", date: "2022.08", role: "UX Writer", tags: ["UX Writing", "Finance"], themeColor: "yellow", summary: "금융 용어를 쉬운 언어로 순화하고 온보딩 경험 개선.", impact: "이탈률 8% 감소" },
-                { id: 6, title: "Traffic Prediction", date: "2021.12", role: "Data Analyst", tags: ["Data", "R&D"], themeColor: "blue", summary: "공공 교통 데이터 분석을 통한 혼잡도 예측 모델링.", impact: "정확도 92%" }
-            ];
-            const notes = [
-                { title: "My Principle", content: "Simple is the best. 복잡한 문제를 가장 단순한 해결책으로 풉니다." },
-                { title: "Collaboration", content: "데이터에 기반하여 설득하고, 직관에 기반하여 소통합니다." },
-                { title: "Favorite Tools", content: "Figma for thinking, Python for proving, Notion for organizing." },
-                { title: "Learning Now", content: "LLM 기반의 서비스 기획과 프롬프트 엔지니어링을 학습 중입니다." }
-            ];
-
-            window.toggleMobileMenu = () => document.getElementById('mobile-menu').classList.toggle('active');
-
-            // --- Robust SVG Pattern Generator ---
-            const getThemePattern = (color) => {
-                const palettes = {
-                    blue:   { bg: '#E8F0FE', fill: '#8AB4F8', stroke: '#4285F4' }, // Darker accents
-                    red:    { bg: '#FCE8E6', fill: '#F28B82', stroke: '#EA4335' },
-                    yellow: { bg: '#FEF7E0', fill: '#FDD663', stroke: '#FBBC04' },
-                    green:  { bg: '#E6F4EA', fill: '#81C995', stroke: '#34A853' }
-                };
-                const p = palettes[color] || palettes.blue;
-
-                let svgContent = '';
-                if (color === 'blue') {
-                    svgContent = `<rect width='100%' height='100%' fill='${p.bg}'/><circle cx='10' cy='10' r='4' fill='${p.fill}'/><circle cx='50' cy='50' r='20' fill='none' stroke='${p.stroke}' stroke-width='2'/><circle cx='90' cy='80' r='10' fill='${p.fill}'/><circle cx='30' cy='90' r='6' fill='${p.stroke}'/>`;
-                } else if (color === 'red') {
-                    svgContent = `<rect width='100%' height='100%' fill='${p.bg}'/><path d='M0 0 L20 20 M20 0 L0 20' stroke='${p.fill}' stroke-width='1'/><rect x='60' y='60' width='30' height='30' fill='${p.stroke}' opacity='0.3'/>`;
-                } else if (color === 'yellow') {
-                    svgContent = `<rect width='100%' height='100%' fill='${p.bg}'/><path d='M10 20 L20 0 L30 20 Z' fill='${p.stroke}'/><circle cx='80' cy='80' r='15' fill='${p.fill}' opacity='0.5'/>`;
-                } else {
-                    svgContent = `<rect width='100%' height='100%' fill='${p.bg}'/><path d='M0 50 Q25 25 50 50 T100 50' stroke='${p.stroke}' stroke-width='2' fill='none'/><circle cx='80' cy='20' r='12' fill='${p.fill}'/>`;
-                }
-                
-                // Safe encoding
-                const svgString = `<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'>${svgContent}</svg>`;
-                return `url("data:image/svg+xml,${encodeURIComponent(svgString)}")`;
-            };
-
-            // --- Carousel ---
-            (function initCarousel() {
-                const track = document.getElementById('carousel-track');
-                const container = document.getElementById('carousel-container');
-                const dotsContainer = document.getElementById('carousel-dots');
-                const prevBtn = document.getElementById('prev-btn');
-                const nextBtn = document.getElementById('next-btn');
-                
-                const gap = 24;
-                const transitionTime = 500;
-                const totalCards = projects.length;
-                let currentIndex = totalCards;
-                let cardsToShow = 3;
-                let cardWidth = 0;
-                let isTransitioning = false;
-                let autoPlayInterval;
-                let pauseTimeout;
-
-                const clonesStart = projects.map(p => ({...p, id: `clone-start-${p.id}`}));
-                const clonesEnd = projects.map(p => ({...p, id: `clone-end-${p.id}`}));
-                const allItems = [...clonesEnd, ...projects, ...clonesStart];
-
-                const createCard = (p) => {
-                    const borderColor = ({ blue: '#4285f4', red: '#ea4335', yellow: '#fbbc04', green: '#34a853' })[p.themeColor] || '#eee';
-                    const bgPattern = getThemePattern(p.themeColor);
-                    
-                    return `
-                    <article class="carousel-card" style="--card-bg: ${bgPattern}; border-left: 4px solid ${borderColor}">
-                        <div class="c-meta"><span class="c-date">${p.date}</span><span class="c-role">${p.role}</span></div>
-                        <h3 class="c-title">${p.title}</h3>
-                        <div class="c-tags">${p.tags.map(t=>`<span>#${t}</span>`).join('')}</div>
-                        <p class="c-summary">${p.summary}</p>
-                        <button class="c-view-btn">View Project</button>
-                    </article>
-                    `;
-                };
-
-                track.innerHTML = allItems.map(createCard).join('');
-                dotsContainer.innerHTML = projects.map((_, i) => `<div class="dot ${i===0?'active':''}" data-index="${i}"></div>`).join('');
-                const dots = Array.from(dotsContainer.children);
-
-                const updateLayout = () => {
-                    const containerWidth = container.offsetWidth;
-                    if (window.innerWidth < 768) cardsToShow = 1.2;
-                    else if (window.innerWidth < 1024) cardsToShow = 2.2;
-                    else cardsToShow = 3;
-                    cardWidth = (containerWidth - (gap * (Math.floor(cardsToShow)))) / cardsToShow;
-                    if(window.innerWidth < 768) cardWidth = containerWidth * 0.85;
-                    document.documentElement.style.setProperty('--card-width', `${cardWidth}px`);
-                    track.style.transition = 'none';
-                    updatePosition();
-                };
-
-                const updatePosition = () => {
-                    const offset = (cardWidth + gap) * currentIndex;
-                    track.style.transform = `translateX(-${offset}px)`;
-                };
-
-                const updateDots = () => {
-                    let realIndex = (currentIndex - totalCards) % totalCards;
-                    if (realIndex < 0) realIndex += totalCards;
-                    dots.forEach(d => d.classList.remove('active'));
-                    if(dots[realIndex]) dots[realIndex].classList.add('active');
-                };
-
-                const move = (direction) => {
-                    if (isTransitioning) return;
-                    isTransitioning = true;
-                    track.style.transition = `transform ${transitionTime}ms cubic-bezier(0.25, 1, 0.5, 1)`;
-                    currentIndex += direction;
-                    updatePosition();
-                    updateDots();
-
-                    setTimeout(() => {
-                        track.style.transition = 'none';
-                        if (currentIndex >= totalCards * 2) { currentIndex = totalCards; updatePosition(); }
-                        else if (currentIndex < totalCards) { currentIndex = totalCards * 2 - 1; updatePosition(); }
-                        isTransitioning = false;
-                    }, transitionTime);
-                };
-
-                const startAutoPlay = () => {
-                    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-                    stopAutoPlay();
-                    autoPlayInterval = setInterval(() => move(1), 5000);
-                };
-                const stopAutoPlay = () => clearInterval(autoPlayInterval);
-                const pauseAndResume = () => {
-                    stopAutoPlay(); clearTimeout(pauseTimeout); pauseTimeout = setTimeout(startAutoPlay, 8000);
-                };
-
-                prevBtn.onclick = () => { move(-1); pauseAndResume(); };
-                nextBtn.onclick = () => { move(1); pauseAndResume(); };
-                dots.forEach((dot, idx) => {
-                    dot.onclick = () => {
-                        isTransitioning = true; track.style.transition = `transform ${transitionTime}ms ease`;
-                        currentIndex = totalCards + idx; updatePosition(); updateDots();
-                        setTimeout(() => { isTransitioning = false; }, transitionTime); pauseAndResume();
-                    };
-                });
-                container.onkeydown = (e) => {
-                    if (e.key === 'ArrowLeft') { move(-1); pauseAndResume(); }
-                    if (e.key === 'ArrowRight') { move(1); pauseAndResume(); }
-                };
-                container.onmouseenter = stopAutoPlay;
-                container.onmouseleave = startAutoPlay;
-                
-                let startX = 0, currentTranslate = 0, isDragging = false;
-                track.addEventListener('touchstart', (e) => {
-                    stopAutoPlay(); startX = e.touches[0].clientX; isDragging = true; track.style.transition = 'none';
-                    const style = window.getComputedStyle(track); currentTranslate = new WebKitCSSMatrix(style.transform).m41;
-                }, {passive: true});
-                track.addEventListener('touchmove', (e) => {
-                    if (!isDragging) return; const walk = e.touches[0].clientX - startX; track.style.transform = `translateX(${currentTranslate + walk}px)`;
-                }, {passive: true});
-                track.addEventListener('touchend', (e) => {
-                    isDragging = false; const diff = startX - e.changedTouches[0].clientX;
-                    if (Math.abs(diff) > 50) move(diff > 0 ? 1 : -1); else { track.style.transition = `transform 300ms ease`; updatePosition(); }
-                    pauseAndResume();
-                });
-                window.addEventListener('resize', updateLayout);
-                updateLayout(); startAutoPlay();
-            })();
-
-            // Impact Map, Finder, etc. (Other JS)
-            const mapContainer = document.getElementById('map-container');
-            if(mapContainer) {
-                projects.forEach(p => {
-                    const dot = document.createElement('div');
-                    dot.className = 'map-dot';
-                    dot.style.top = (Math.random() * 60 + 20) + '%';
-                    dot.style.left = (Math.random() * 60 + 20) + '%';
-                    dot.setAttribute('data-tooltip', `${p.title}: ${p.impact}`);
-                    dot.style.backgroundColor = ({ blue: 'var(--primary)', red: 'var(--secondary)', yellow: 'var(--accent-1)', green: 'var(--accent-2)' })[p.themeColor];
-                    mapContainer.appendChild(dot);
-                });
-            }
-            window.handleFinder = function() {
-                const focus = document.getElementById('filter-focus').value;
-                const context = document.getElementById('filter-context').value;
-                const container = document.getElementById('finder-results');
-                container.innerHTML = ''; 
-                const filtered = projects.filter(p => {
-                    const matchFocus = focus ? p.tags.some(t => t.includes(focus)) : true;
-                    const matchContext = context ? p.tags.some(t => t.includes(context)) : true;
-                    return matchFocus && matchContext;
-                });
-                if (filtered.length === 0) container.innerHTML = `<p style="grid-column:1/-1; text-align:center; color:var(--gray); padding:40px;">No projects found.</p>`;
-                else filtered.forEach(p => {
-                    const borderColor = ({ blue: '#4285f4', red: '#ea4335', yellow: '#fbbc04', green: '#34a853' })[p.themeColor] || '#eee';
-                    const bgPattern = getThemePattern(p.themeColor);
-                    container.innerHTML += `<div class="carousel-card" style="width:100%; border-left:4px solid ${borderColor}; --card-bg: ${bgPattern};"><div class="c-meta"><span class="c-date">${p.date}</span><span class="c-role">${p.role}</span></div><h3 class="c-title">${p.title}</h3><div class="c-tags">${p.tags.map(t=>`<span>#${t}</span>`).join('')}</div><p class="c-summary">${p.summary}</p></div>`;
-                });
-            };
-            window.filterTheme = function(color) {
-                const container = document.getElementById('theme-results');
-                const title = document.getElementById('current-theme-title');
-                const wheel = document.getElementById('theme-wheel');
-                const rotations = { blue: 45, red: 135, yellow: 225, green: 315 };
-                wheel.style.transform = `rotate(${rotations[color]}deg)`;
-                title.innerText = ({ blue: 'Data & Tech', red: 'Operations', yellow: 'Product', green: 'Sustainability' })[color];
-                container.innerHTML = '';
-                const filtered = projects.filter(p => p.themeColor === color);
-                document.querySelectorAll('.theme-btn').forEach(btn => btn.classList.remove('active'));
-                filtered.forEach(p => {
-                    const borderColor = ({ blue: '#4285f4', red: '#ea4335', yellow: '#fbbc04', green: '#34a853' })[p.themeColor] || '#eee';
-                    const bgPattern = getThemePattern(p.themeColor);
-                    container.innerHTML += `<div class="carousel-card" style="width:100%; border-left:4px solid ${borderColor}; --card-bg: ${bgPattern};"><h3 class="c-title">${p.title}</h3><p class="c-summary">${p.summary}</p></div>`;
-                });
-            };
-            window.surpriseMe = () => window.filterTheme(['blue', 'red', 'yellow', 'green'][Math.floor(Math.random() * 4)]);
-            let stackIndex = 0;
-            const renderStack = () => {
-                const container = document.getElementById('stack-container');
-                container.innerHTML = '';
-                notes.forEach((note, index) => {
-                    const card = document.createElement('div');
-                    card.className = 'stack-card';
-                    card.innerHTML = `<h3>${note.title}</h3><p>${note.content}</p>`;
-                    card.style.zIndex = notes.length - index;
-                    card.style.transform = `translate(${index * 8}px, ${index * 8}px) scale(${1 - index * 0.04})`;
-                    card.style.opacity = index === 0 ? 1 : 0.6 - (index * 0.1);
-                    container.appendChild(card);
-                });
-            };
-            window.nextCard = () => {
-                const container = document.getElementById('stack-container');
-                if (container.children.length > 0) {
-                    const top = container.children[0];
-                    top.style.transform = 'translate(120%, -20%) rotate(15deg)'; top.style.opacity = '0';
-                    setTimeout(() => { notes.push(notes.shift()); renderStack(); }, 300);
-                }
-            };
-            renderStack();
-            window.openAllProjects = () => {
-                const modal = document.getElementById('project-modal');
-                const grid = document.getElementById('modal-grid');
-                grid.innerHTML = '';
-                projects.forEach(p => {
-                    const borderColor = ({ blue: '#4285f4', red: '#ea4335', yellow: '#fbbc04', green: '#34a853' })[p.themeColor] || '#eee';
-                    const bgPattern = getThemePattern(p.themeColor);
-                    grid.innerHTML += `<div class="carousel-card" style="width:100%; border-left:4px solid ${borderColor}; --card-bg: ${bgPattern};"><div class="c-meta"><span class="c-date">${p.date}</span><span class="c-role">${p.role}</span></div><h3 class="c-title">${p.title}</h3><div class="c-tags">${p.tags.map(t=>`<span>#${t}</span>`).join('')}</div><p class="c-summary">${p.summary}</p></div>`;
-                });
-                modal.showModal();
-            };
-        })();
-    </script>
-</body>
-</html>
+export default App;
