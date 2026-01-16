@@ -1,0 +1,525 @@
+import React, { useState, useEffect } from 'react';
+import { 
+    Menu, X, ArrowRight, CheckCircle, 
+    FileText, Layers, Activity, Shield, 
+    Target, Zap, LayoutTemplate, Briefcase 
+} from 'lucide-react';
+
+// --- Components ---
+
+const Navbar = () => {
+    const [isOpen, setIsOpen] = useState(false);
+    const [scrolled, setScrolled] = useState(false);
+
+    useEffect(() => {
+        const handleScroll = () => {
+            setScrolled(window.scrollY > 50);
+        };
+        window.addEventListener('scroll', handleScroll);
+        return () => window.removeEventListener('scroll', handleScroll);
+    }, []);
+
+    const navLinks = [
+        { name: 'HOME', to: '#home' },
+        { name: 'COMPANY', to: '#company' },
+        { name: 'CAPABILITIES', to: '#capabilities' },
+        { name: 'PROJECTS', to: '#projects' },
+        { name: 'INSIGHTS', to: '#insights' },
+        { name: 'CONTACT', to: '#contact' },
+    ];
+
+    return (
+        <nav className={`fixed w-full z-50 transition-all duration-300 ${scrolled ? 'bg-white/95 backdrop-blur-sm shadow-md py-4' : 'bg-slate-900 py-6'}`}>
+            <div className="container mx-auto px-6 flex justify-between items-center">
+                <a href="#home" className={`text-2xl font-extrabold tracking-tighter ${scrolled ? 'text-slate-900' : 'text-white'}`}>
+                    STRUCTURE <span className="text-blue-500">FIXER</span>
+                </a>
+                
+                {/* Desktop Menu */}
+                <div className="hidden md:flex space-x-8">
+                    {navLinks.map((link) => (
+                        <a 
+                            key={link.name} 
+                            href={link.to} 
+                            className={`text-sm font-bold hover:text-blue-500 transition-colors ${scrolled ? 'text-slate-600' : 'text-slate-300'}`}
+                        >
+                            {link.name}
+                        </a>
+                    ))}
+                </div>
+
+                {/* Mobile Menu Button */}
+                <button 
+                    className="md:hidden focus:outline-none" 
+                    onClick={() => setIsOpen(!isOpen)}
+                >
+                    {isOpen ? 
+                        <X className={scrolled ? "text-slate-900" : "text-white"} /> : 
+                        <Menu className={scrolled ? "text-slate-900" : "text-white"} />
+                    }
+                </button>
+            </div>
+
+            {/* Mobile Menu Dropdown */}
+            {isOpen && (
+                <div className="md:hidden absolute top-full left-0 w-full bg-white shadow-lg border-t border-slate-100">
+                    <div className="flex flex-col py-4">
+                        {navLinks.map((link) => (
+                            <a 
+                                key={link.name} 
+                                href={link.to}
+                                className="px-6 py-3 text-slate-800 hover:bg-slate-50 hover:text-blue-600 font-bold"
+                                onClick={() => setIsOpen(false)}
+                            >
+                                {link.name}
+                            </a>
+                        ))}
+                    </div>
+                </div>
+            )}
+        </nav>
+    );
+};
+
+const Hero = () => {
+    return (
+        <section id="home" className="relative pt-32 pb-20 md:pt-48 md:pb-32 bg-slate-900 text-white overflow-hidden">
+            {/* Background Pattern */}
+            <div className="absolute inset-0 opacity-10 pointer-events-none">
+                <div className="absolute right-0 top-0 w-1/2 h-full bg-blue-600 transform -skew-x-12 translate-x-1/4"></div>
+                <div className="absolute left-10 bottom-10 w-64 h-64 border border-slate-700 rounded-full"></div>
+                <div className="absolute right-20 top-20 w-32 h-32 border border-slate-700 rounded-full"></div>
+            </div>
+
+            <div className="container mx-auto px-6 relative z-10">
+                <div className="max-w-4xl">
+                    <h1 className="text-4xl md:text-6xl font-extrabold leading-tight mb-6">
+                        복잡한 공공·기술 문제를,<br/>
+                        <span className="text-blue-500">실행 가능한 구조</span>로 바꿉니다.
+                    </h1>
+                    <p className="text-lg md:text-xl text-slate-400 mb-10 max-w-2xl leading-relaxed font-medium">
+                        STRUCTURE FIXER는 공공·스마트시티·데이터·AI 프로젝트에서<br className="hidden md:block" />
+                        제안부터 수행, 운영까지 이어지는 구조를 설계합니다.
+                    </p>
+                    <div className="flex flex-col sm:flex-row gap-4">
+                        <a href="#projects" className="px-8 py-4 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-lg transition-all text-center flex items-center justify-center gap-2">
+                            View Projects <ArrowRight size={18} />
+                        </a>
+                        <a href="#company" className="px-8 py-4 border border-slate-600 hover:border-slate-400 text-slate-300 hover:text-white font-bold rounded-lg transition-all text-center">
+                            Company Profile
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    );
+};
+
+const ServiceCard = ({ icon: Icon, title, desc, items }) => (
+    <div className="bg-white p-8 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow group">
+        <div className="w-12 h-12 bg-blue-50 rounded-lg flex items-center justify-center mb-6 group-hover:bg-blue-600 transition-colors">
+            <Icon className="text-blue-600 group-hover:text-white transition-colors" size={24} />
+        </div>
+        <h3 className="text-xl font-extrabold text-slate-900 mb-2">{title}</h3>
+        <p className="text-slate-600 mb-6 text-sm leading-relaxed min-h-[40px]">{desc}</p>
+        <ul className="space-y-2">
+            {items.map((item, idx) => (
+                <li key={idx} className="flex items-start text-sm text-slate-500 font-medium">
+                    <span className="w-1.5 h-1.5 bg-blue-400 rounded-full mt-1.5 mr-2 flex-shrink-0"></span>
+                    {item}
+                </li>
+            ))}
+        </ul>
+    </div>
+);
+
+const WhatWeDo = () => {
+    const services = [
+        {
+            icon: FileText,
+            title: "1. Proposal Planning",
+            desc: "수주를 위한 문서가 아니라, 수행과 운영까지 이어지는 논리를 설계합니다.",
+            items: ["사업 구조 분석", "제안 논리 정렬", "KPI·성과체계 설계", "발표자료 및 스토리라인 구성"]
+        },
+        {
+            icon: LayoutTemplate,
+            title: "2. Service Planning",
+            desc: "기술 중심이 아닌, 사용자·운영자·발주처 관점에서 서비스를 구조화합니다.",
+            items: ["서비스 구조 정의", "데이터 활용 시나리오", "대시보드·UI 정보 구조", "AI 적용 시나리오 기획"]
+        },
+        {
+            icon: Target,
+            title: "3. Delivery & Execution",
+            desc: "계획으로 끝나지 않도록, 실제 현장에서 작동하는 구조를 만듭니다.",
+            items: ["WBS·일정 관리", "이해관계자 조율", "산출물 품질 관리", "현장 이슈 대응"]
+        },
+        {
+            icon: Shield,
+            title: "4. Governance & Management",
+            desc: "프로젝트 종료 이후까지 고려한 운영·관리 구조를 설계합니다.",
+            items: ["운영 프로세스 정리", "역할·권한 체계 정의", "인수인계 문서화", "확장·고도화 고려"]
+        }
+    ];
+
+    return (
+        <section className="py-20 bg-slate-50">
+            <div className="container mx-auto px-6">
+                <div className="text-center mb-16">
+                    <h2 className="text-3xl font-extrabold text-slate-900 mb-4">WHAT WE DO</h2>
+                    <p className="text-slate-600 font-medium">문제를 정의하고, 구조를 설계하며, 실행을 완료합니다.</p>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    {services.map((service, idx) => (
+                        <ServiceCard key={idx} {...service} />
+                    ))}
+                </div>
+            </div>
+        </section>
+    );
+};
+
+const WhyUs = () => {
+    const reasons = [
+        { title: "문제 정의부터 시작합니다", desc: "“무엇을 만들 것인가”보다 “왜 필요한가”를 먼저 정리합니다." },
+        { title: "기술과 행정의 언어를 연결합니다", desc: "개발자, 공무원, 연구자 모두가 이해하는 구조를 만듭니다." },
+        { title: "제안–수행–운영의 맥락을 끊지 않습니다", desc: "문서용 기획이 아닌 실행 가능한 기획을 지향합니다." }
+    ];
+
+    return (
+        <section className="py-20 bg-white border-y border-slate-100">
+            <div className="container mx-auto px-6">
+                <div className="flex flex-col lg:flex-row items-center gap-12">
+                    <div className="lg:w-1/3">
+                        <h2 className="text-3xl font-extrabold text-slate-900 mb-6">WHY<br/>STRUCTURE FIXER</h2>
+                        <p className="text-slate-600 leading-relaxed font-medium">
+                            우리는 단순한 기획자가 아닙니다.<br/>
+                            복잡하게 얽힌 문제의 실타래를 풀고,<br/>
+                            단단한 구조로 재조립하는 <strong>Fixer</strong>입니다.
+                        </p>
+                    </div>
+                    <div className="lg:w-2/3 grid gap-6">
+                        {reasons.map((reason, idx) => (
+                            <div key={idx} className="flex items-start p-6 bg-slate-50 rounded-lg border border-slate-100">
+                                <CheckCircle className="text-blue-600 mt-1 mr-4 flex-shrink-0" size={24} />
+                                <div>
+                                    <h3 className="text-lg font-bold text-slate-900 mb-2">{reason.title}</h3>
+                                    <p className="text-slate-600">{reason.desc}</p>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            </div>
+        </section>
+    );
+};
+
+const Company = () => {
+    return (
+        <section id="company" className="py-20 bg-slate-900 text-white">
+            <div className="container mx-auto px-6">
+                <div className="mb-16 border-b border-slate-700 pb-8">
+                    <h2 className="text-3xl font-extrabold mb-4">COMPANY</h2>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8 text-slate-300">
+                        <div>
+                            <p><strong className="text-white">Company Name:</strong> STRUCTURE FIXER</p>
+                            <p className="mt-2"><strong className="text-white">Business Area:</strong> Public Sector / Smart City / Data & AI Service Planning</p>
+                        </div>
+                        <div>
+                            <p><strong className="text-white">Core Expertise:</strong> Proposal Planning · Service Planning · Delivery · Governance</p>
+                            <p className="mt-2"><strong className="text-white">Location:</strong> Republic of Korea</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-16">
+                    {/* Vision */}
+                    <div className="bg-slate-800 p-8 rounded-xl border-l-4 border-blue-500">
+                        <h3 className="text-xl font-bold text-blue-400 mb-4">VISION</h3>
+                        <p className="text-2xl font-light leading-relaxed text-white">
+                            "공공 서비스가<br/>
+                            데이터와 구조로 작동하는 환경을 만든다."
+                        </p>
+                    </div>
+                    
+                    {/* Mission */}
+                    <div className="bg-slate-800 p-8 rounded-xl border-l-4 border-teal-500">
+                        <h3 className="text-xl font-bold text-teal-400 mb-4">MISSION</h3>
+                        <ul className="space-y-4 text-slate-200">
+                            <li className="flex items-center"><span className="w-2 h-2 bg-teal-500 rounded-full mr-3"></span>복잡한 공공·기술 과제를 구조적으로 해석한다.</li>
+                            <li className="flex items-center"><span className="w-2 h-2 bg-teal-500 rounded-full mr-3"></span>이해관계자가 같은 그림으로 실행할 수 있도록 정렬한다.</li>
+                            <li className="flex items-center"><span className="w-2 h-2 bg-teal-500 rounded-full mr-3"></span>문서가 아닌, 작동하는 결과를 남긴다.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                {/* Core Values */}
+                <div>
+                    <h3 className="text-xl font-bold mb-8 text-center">CORE VALUES</h3>
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+                        {[
+                            { en: "Clarity", kr: "모호한 요구사항을 구조와 기준으로 정리합니다." },
+                            { en: "Accountability", kr: "역할·범위·결정 책임을 명확히 합니다." },
+                            { en: "Translation", kr: "기술과 행정, 기획의 언어를 연결합니다." },
+                            { en: "Execution", kr: "계획이 실제 현장에서 실행되도록 끝까지 책임집니다." }
+                        ].map((val, idx) => (
+                            <div key={idx} className="text-center p-6 bg-slate-800/50 rounded-lg">
+                                <h4 className="text-lg font-bold text-white mb-2">{val.en}</h4>
+                                <p className="text-sm text-slate-400 break-keep font-medium">{val.kr}</p>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            </div>
+        </section>
+    );
+};
+
+const Capabilities = () => {
+        const caps = [
+        { title: "제안기획 (Proposal Planning)", items: ["공공사업 구조 분석", "제안 논리 및 스토리라인 설계", "KPI·성과지표 체계 수립", "제안서·발표자료 작성"] },
+        { title: "서비스기획 (Service Planning)", items: ["서비스 구조 및 기능 정의", "데이터 활용 모델 설계", "대시보드 정보 구조 설계", "AI·데이터 기반 서비스 시나리오"] },
+        { title: "수행 (Delivery)", items: ["WBS·일정·리스크 관리", "이해관계자 커뮤니케이션", "산출물 품질 관리", "현장 이슈 대응"] },
+        { title: "관리 (Governance)", items: ["운영 프로세스 설계", "역할·권한·관리 체계 정의", "인수인계 문서화", "확장·고도화 고려"] }
+    ];
+
+    return (
+        <section id="capabilities" className="py-20 bg-white">
+            <div className="container mx-auto px-6">
+                <div className="text-center mb-16">
+                    <h2 className="text-3xl font-extrabold text-slate-900">CAPABILITIES</h2>
+                    <p className="text-slate-500 mt-2 font-medium">STRUCTURE FIXER의 전문 역량 프레임워크</p>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    {caps.map((cap, idx) => (
+                        <div key={idx} className="border border-slate-200 rounded-lg p-6 hover:border-blue-500 transition-colors">
+                            <h3 className="text-lg font-bold text-slate-900 mb-4 border-b border-slate-100 pb-2">{cap.title}</h3>
+                            <div className="flex flex-wrap gap-2">
+                                {cap.items.map((item, i) => (
+                                    <span key={i} className="px-3 py-1 bg-slate-100 text-slate-600 text-sm rounded-full font-medium">
+                                        {item}
+                                    </span>
+                                ))}
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            </div>
+        </section>
+    );
+};
+
+const ProjectCard = ({ title, role, problem, approach, deliverables, index }) => (
+    <div className="bg-white rounded-xl overflow-hidden border border-slate-200 shadow-sm hover:shadow-lg transition-all duration-300 flex flex-col h-full">
+        <div className="bg-slate-50 px-6 py-4 border-b border-slate-100 flex justify-between items-center">
+            <h3 className="font-extrabold text-lg text-slate-900">{title}</h3>
+            <span className="text-xs font-bold text-blue-600 bg-blue-50 px-2 py-1 rounded border border-blue-100">CASE 0{index + 1}</span>
+        </div>
+        <div className="p-6 flex-grow flex flex-col gap-6">
+            <div>
+                <span className="text-xs font-bold text-slate-400 uppercase tracking-wider block mb-1">Role</span>
+                <p className="text-sm font-bold text-slate-700">{role}</p>
+            </div>
+            
+            <div className="bg-red-50 p-4 rounded-lg border border-red-100">
+                <span className="text-xs font-bold text-red-500 uppercase tracking-wider block mb-1">Problem</span>
+                <p className="text-sm text-slate-700">{problem}</p>
+            </div>
+
+            <div className="bg-blue-50 p-4 rounded-lg border border-blue-100 flex-grow">
+                <span className="text-xs font-bold text-blue-500 uppercase tracking-wider block mb-1">Approach</span>
+                <ul className="list-disc list-inside text-sm text-slate-700 space-y-1">
+                    {approach.map((item, i) => <li key={i}>{item}</li>)}
+                </ul>
+            </div>
+
+            <div>
+                <span className="text-xs font-bold text-slate-400 uppercase tracking-wider block mb-2">Deliverables</span>
+                <div className="flex flex-wrap gap-2">
+                    {deliverables.map((item, i) => (
+                        <span key={i} className="text-xs bg-slate-100 text-slate-600 px-2 py-1 rounded font-medium">{item}</span>
+                    ))}
+                </div>
+            </div>
+        </div>
+    </div>
+);
+
+const Projects = () => {
+    const projects = [
+        {
+            title: "성남시 스마트 빌리지",
+            role: "제안기획 · 서비스기획 · 수행",
+            problem: "다양한 스마트 서비스가 개별적으로 운영되어 통합적 관리와 활용이 어려운 상황",
+            approach: ["스마트 서비스 구조 재정의", "데이터 기반 통합 관리 시나리오 설계", "사용자·운영자 관점 서비스 기획"],
+            deliverables: ["서비스 구조도", "대시보드 기획안", "제안서 및 수행 산출물"]
+        },
+        {
+            title: "KOICA 베트남 스마트시티",
+            role: "제안기획 · 서비스기획 · 대외 커뮤니케이션",
+            problem: "해외 도시 환경에 맞는 스마트시티 모델 부재, 기술 중심 접근으로 현지 적용성 한계",
+            approach: ["현지 행정·환경 분석", "단계별 스마트시티 서비스 구조 설계", "KOICA 사업 구조에 맞춘 실행 시나리오 제안"],
+            deliverables: ["스마트시티 서비스 기획안", "제안서·발표자료", "사업 구조 정리 문서"]
+        },
+        {
+            title: "강원 후평 스마트그린산단",
+            role: "제안기획 · 수행 · 관리",
+            problem: "스마트그린산단 사업 범위가 넓고 참여 기관 간 역할·책임이 불명확",
+            approach: ["사업 구조 및 역할 재정의", "통합 관제·데이터 활용 시나리오 설계", "수행·운영 관점에서의 관리 체계 정리"],
+            deliverables: ["통합 관제 서비스 기획", "수행 계획서", "운영·관리 구조 문서"]
+        },
+        {
+            title: "NIPA 공공 AX 실증 사업",
+            role: "서비스기획 · 수행",
+            problem: "AI 기술은 있으나 실제 공공 업무 적용 시나리오 부족",
+            approach: ["공공 업무 프로세스 분석", "AI 적용 가능한 지점 도출", "실증 중심 서비스 시나리오 설계"],
+            deliverables: ["공공 AX 서비스 기획안", "실증 시나리오 문서", "성과 정리 자료"]
+        }
+    ];
+
+    return (
+        <section id="projects" className="py-20 bg-slate-50">
+            <div className="container mx-auto px-6">
+                    <div className="text-center mb-16">
+                    <h2 className="text-3xl font-extrabold text-slate-900">PROJECTS</h2>
+                    <p className="text-slate-500 mt-2 font-medium">복잡한 문제를 구조적으로 해결한 대표 사례입니다.</p>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    {projects.map((p, idx) => (
+                        <ProjectCard key={idx} {...p} index={idx} />
+                    ))}
+                </div>
+            </div>
+        </section>
+    );
+};
+
+const Insights = () => {
+    const titles = [
+        "공공 프로젝트에서 기획자가 반드시 해야 하는 일",
+        "제안서가 수행까지 이어지지 않는 이유",
+        "공공 AX에서 ‘AI’보다 중요한 것",
+        "대시보드는 왜 항상 실패하는가",
+        "이해관계자가 많은 프로젝트를 정리하는 법"
+    ];
+
+    return (
+        <section id="insights" className="py-20 bg-white">
+            <div className="container mx-auto px-6">
+                <div className="flex justify-between items-end mb-12">
+                    <div>
+                        <h2 className="text-3xl font-extrabold text-slate-900">INSIGHTS</h2>
+                        <p className="text-slate-500 mt-2 font-medium">현장에서 얻은 경험과 관점을 공유합니다.</p>
+                    </div>
+                    <a href="#" className="hidden md:inline-block text-blue-600 font-bold hover:underline">View All Posts &rarr;</a>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {titles.map((title, idx) => (
+                        <div key={idx} className="group cursor-pointer">
+                            <div className="aspect-video bg-slate-100 rounded-lg mb-4 overflow-hidden relative">
+                                <div className="absolute inset-0 bg-slate-200 group-hover:scale-105 transition-transform duration-500"></div>
+                                <div className="absolute inset-0 flex items-center justify-center text-slate-400">
+                                    <FileText size={40} opacity={0.5} />
+                                </div>
+                            </div>
+                            <div className="flex gap-2 mb-2">
+                                    <span className="text-xs font-bold text-blue-600 uppercase">Column</span>
+                                    <span className="text-xs text-slate-400 font-medium">2023.10.{10 + idx}</span>
+                            </div>
+                            <h3 className="text-lg font-bold text-slate-900 group-hover:text-blue-600 transition-colors leading-snug">
+                                {title}
+                            </h3>
+                        </div>
+                    ))}
+                </div>
+                <div className="mt-8 text-center md:hidden">
+                    <a href="#" className="text-blue-600 font-semibold hover:underline">View All Posts &rarr;</a>
+                </div>
+            </div>
+        </section>
+    );
+};
+
+const Contact = () => {
+    return (
+        <section id="contact" className="py-20 bg-slate-900 text-white">
+            <div className="container mx-auto px-6">
+                <div className="max-w-4xl mx-auto text-center">
+                    <h2 className="text-3xl font-extrabold mb-6">CONTACT</h2>
+                    <p className="text-xl text-slate-300 mb-12 font-medium">
+                        복잡한 공공·기술 과제, 구조를 잡으면 해결됩니다.<br/>
+                        당신의 프로젝트를 실행 가능한 상태로 만들어 드립니다.
+                    </p>
+                    
+                    <div className="bg-slate-800 p-8 rounded-xl max-w-lg mx-auto border border-slate-700">
+                        <h3 className="text-xl font-bold text-white mb-6">Get In Touch</h3>
+                        <div className="space-y-4 text-left">
+                            <div className="flex items-center space-x-4">
+                                <div className="w-10 h-10 bg-slate-700 rounded-full flex items-center justify-center">
+                                    <Briefcase size={20} className="text-blue-400" />
+                                </div>
+                                <div>
+                                    <p className="text-xs text-slate-400 uppercase font-bold">Inquiry</p>
+                                    <p className="text-slate-200">contact@structurefixer.com</p>
+                                </div>
+                            </div>
+                            <div className="flex items-center space-x-4">
+                                <div className="w-10 h-10 bg-slate-700 rounded-full flex items-center justify-center">
+                                    <LayoutTemplate size={20} className="text-blue-400" />
+                                </div>
+                                <div>
+                                    <p className="text-xs text-slate-400 uppercase font-bold">Portfolio Request</p>
+                                    <a href="#" className="text-blue-400 hover:text-blue-300 underline font-medium">Download PDF Profile</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    );
+};
+
+const Footer = () => (
+    <footer className="bg-slate-950 text-slate-500 py-8 border-t border-slate-900">
+        <div className="container mx-auto px-6 flex flex-col md:flex-row justify-between items-center">
+            <div className="mb-4 md:mb-0">
+                <span className="font-bold text-slate-400">STRUCTURE FIXER</span>
+                <span className="mx-2">|</span>
+                <span className="text-sm">Republic of Korea</span>
+            </div>
+            <div className="text-sm">
+                &copy; {new Date().getFullYear()} Structure Fixer. All rights reserved.
+            </div>
+        </div>
+    </footer>
+);
+
+const App = () => {
+    return (
+        <div className="antialiased bg-slate-50 text-slate-800 font-sans">
+             <style>{`
+                @import url('https://cdn.jsdelivr.net/gh/moonspam/NanumSquare@2.0/nanumsquareround.css');
+                body {
+                    font-family: 'NanumSquareRound', sans-serif;
+                    scroll-behavior: smooth;
+                }
+                html {
+                    scroll-behavior: smooth;
+                }
+            `}</style>
+            <Navbar />
+            <Hero />
+            <WhatWeDo />
+            <WhyUs />
+            <Company />
+            <Capabilities />
+            <Projects />
+            <Insights />
+            <Contact />
+            <Footer />
+        </div>
+    );
+};
+
+export default App;
